@@ -20,21 +20,23 @@ int countPairs2(int *arr, int len, int value) {
     while (left < right) {
         int sum = arr[left] + arr[right];
         if (sum == value) {
-            int leftVal = arr[left];
-            int rightVal = arr[right];
-            int leftCount = 0;
-            int rightCount = 0;
-            while (left <= right && arr[left] == leftVal) {
-                leftCount++;
-                left++;
-            }
-            while (left <= right && arr[right] == rightVal) {
-                rightCount++;
-                right--;
-            }
-            if (leftVal == rightVal) {
-                count += leftCount * (leftCount - 1) / 2;
+            if (arr[left] == arr[right]) {
+                int n = right - left + 1;
+                count += n * (n - 1) / 2;
+                break;
             } else {
+                int leftVal = arr[left];
+                int rightVal = arr[right];
+                int leftCount = 0;
+                int rightCount = 0;
+                while (left <= right && arr[left] == leftVal) {
+                    leftCount++;
+                    left++;
+                }
+                while (left <= right && arr[right] == rightVal) {
+                    rightCount++;
+                    right--;
+                }
                 count += leftCount * rightCount;
             }
         } else if (sum < value) {
@@ -64,18 +66,14 @@ int countPairs3(int *arr, int len, int value) {
     int count = 0;
     for (int i = 0; i < len; i++) {
         int target = value - arr[i];
-        int pos = binarySearch(arr, i + 1, len - 1, target);
-        if (pos != -1) {
-            int leftPos = pos;
-            int rightPos = pos;
-            while (leftPos > i && arr[leftPos - 1] == target) {
-                leftPos--;
+        int first = binarySearch(arr, i + 1, len - 1, target);
+        if (first != -1) {
+            int last = first;
+            while (last + 1 < len && arr[last + 1] == target) {
+                last++;
             }
-            while (rightPos < len - 1 && arr[rightPos + 1] == target) {
-                rightPos++;
-            }
-            count += (rightPos - leftPos + 1);
-            i = rightPos;
+            count += (last - first + 1);
+            i = last;
         }
     }
     return count;
