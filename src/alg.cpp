@@ -87,7 +87,7 @@ int upperBound(int *arr, int left, int right, int target) {
   return result;
 }
 
-int countPairs3(int arr, int len, int value) {
+int countPairs3(int *arr, int len, int value) {
   int count = 0;
 
   for (int i = 0; i < len; i++) {
@@ -104,7 +104,7 @@ int countPairs3(int arr, int len, int value) {
     if (target == arr[i]) {
       int last = upperBound(arr, i, len - 1, arr[i]);
       int cnt = last - i + 1;
-      count += cnt (cnt - 1) / 2;
+      count += cnt * (cnt - 1) / 2;
     } else {
       int first = lowerBound(arr, i + 1, len - 1, target);
       if (first == -1) {
