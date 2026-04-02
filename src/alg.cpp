@@ -4,127 +4,110 @@
 
 int countPairs1(int *arr, int len, int value) {
   int pairCount = 0;
-  for (int firstIdx = 0; firstIdx < len; firstIdx++) {
-    for (int secondIdx = firstIdx + 1; secondIdx < len; secondIdx++) {
-      if (arr[firstIdx] + arr[secondIdx] == value) {
-        pairCount++;
+    for (int i = 0; i < len; i++) {
+      for (int j = i + 1; j < len; j++) {
+        if (arr[i] + arr[j] == value) {
+          pairCount++;
+        }
       }
     }
-  }
-  return pairCount;
+    return pairCount;;
 }
 
 int countPairs2(int *arr, int len, int value) {
   int pairCount = 0;
-  int leftPtr = 0;
-  int rightPtr = len - 1;
-  
-  while (leftPtr < rightPtr) {
-    int currentSum = arr[leftPtr] + arr[rightPtr];
-    
-    if (currentSum == value) {
-      int leftDupCount = 1;
-      int rightDupCount = 1;
-      
-      while (leftPtr + leftDupCount < rightPtr && 
-             arr[leftPtr] == arr[leftPtr + leftDupCount]) {
-        leftDupCount++;
+  int left = 0;
+  int right = len - 1;
+
+  while (left < right) {
+    int sum = arr[left] + arr[right];
+
+    if (sum == value) {
+      int leftCount = 1;
+      int rightCount = 1;
+
+      while (left + leftCount < right && arr[left] == arr[left + leftCount]) {
+        leftCount++;
       }
-      
-      while (rightPtr - rightDupCount > leftPtr && 
-             arr[rightPtr] == arr[rightPtr - rightDupCount]) {
-        rightDupCount++;
+
+      while (right - rightCount > left && arr[right] == arr[right - rightCount]) {
+        rightCount++;
       }
-      
-      if (arr[leftPtr] == arr[rightPtr]) {
-        int totalSize = leftDupCount + rightDupCount;
-        pairCount += totalSize * (totalSize - 1) / 2;
+
+      if (arr[left] == arr[right]) {
+        int total = leftCount + rightCount;
+        pairCount += total * (total - 1) / 2;
       } else {
-        pairCount += leftDupCount * rightDupCount;
+        pairCount += leftCount * rightCount;
       }
-      
-      leftPtr += leftDupCount;
-      rightPtr -= rightDupCount;
-    } 
-    else if (currentSum < value) {
-      leftPtr++;
-    } 
-    else {
-      rightPtr--;
+
+      left += leftCount;
+      right -= rightCount;
+    } else if (sum < value) {
+      left++;
+    } else {
+      right--;
     }
   }
-  
+
   return pairCount;
 }
 
-int findFirstOccurrence(int *arr, int leftBound, int rightBound, int targetVal) {
-  int resultIdx = -1;
-  while (leftBound <= rightBound) {
-    int midPoint = leftBound + (rightBound - leftBound) / 2;
-    if (arr[midPoint] == targetVal) {
-      resultIdx = midPoint;
-      rightBound = midPoint - 1;
-    } 
-    else if (arr[midPoint] < targetVal) {
-      leftBound = midPoint + 1;
-    } 
-    else {
-      rightBound = midPoint - 1;
+int lowerBound(int *arr, int left, int right, int target) {
+  int result = -1;
+  while (left <= right) {
+    int mid = left + (right - left) / 2;
+    if (arr[mid] == target) {
+      result = mid;
+      right = mid - 1;
+    } else if (arr[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
     }
   }
-  return resultIdx;
+  return result;
 }
 
-int findLastOccurrence(int *arr, int leftBound, int rightBound, int targetVal) {
-  int resultIdx = -1;
-  while (leftBound <= rightBound) {
-    int midPoint = leftBound + (rightBound - leftBound) / 2;
-    if (arr[midPoint] == targetVal) {
-      resultIdx = midPoint;
-      leftBound = midPoint + 1;
-    } 
-    else if (arr[midPoint] < targetVal) {
-      leftBound = midPoint + 1;
-    } 
-    else {
-      rightBound = midPoint - 1;
+int upperBound(int *arr, int left, int right, int target) {
+  int result = -1;
+  while (left <= right) {
+    int mid = left + (right - left) / 2;
+    if (arr[mid] == target) {
+      result = mid;
+      left = mid + 1;
+    } else if (arr[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
     }
   }
-  return resultIdx;
+  return result;
 }
 
 int countPairs3(int *arr, int len, int value) {
-  int pairCount = 0;
-  
-  for (int currentIdx = 0; currentIdx < len; currentIdx++) {
-    if (currentIdx > 0 && arr[currentIdx] == arr[currentIdx - 1]) {
+  int count = 0;
+
+  for (int i = 0; i < len; i++) {
+    if (i > 0 && arr[i] == arr[i - 1]) {
       continue;
     }
-    
-    int neededVal = value - arr[currentIdx];
-    if (neededVal < arr[currentIdx]) {
+
+    int target = value - arr[i];
+
+    if (target < arr[i]) {
       break;
     }
-    
-    int firstPos = findFirstOccurrence(arr, currentIdx + 1, len - 1, neededVal);
-    if (firstPos == -1) {
+
+    int first = lowerBound(arr, i + 1, len - 1, target);
+    if (first == -1) {
       continue;
     }
-    
-    int lastPos = findLastOccurrence(arr, currentIdx + 1, len - 1, neededVal);
-    
-    if (arr[currentIdx] == neededVal) {
-      int groupSize = lastPos - firstPos + 1 + 1;
-      pairCount += groupSize * (groupSize - 1) / 2;
-      break;
-    } 
-    else {
-      int leftGroupFirst = findFirstOccurrence(arr, 0, len - 1, arr[currentIdx]);
-      int leftGroupLast = findLastOccurrence(arr, 0, len - 1, arr[currentIdx]);
-      int leftGroupCount = leftGroupLast - leftGroupFirst + 1;
-      pairCount += leftGroupCount * (lastPos - firstPos + 1);
-    }
+
+    int last = upperBound(arr, i + 1, len - 1, target);
+
+    count += (last - first + 1);
   }
-  
-  return pairCount;
+
+  return count;
 }
