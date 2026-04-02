@@ -3,19 +3,19 @@
 #include "alg.h"
 
 int countPairs1(int *arr, int len, int value) {
-  int pairCount = 0;
-    for (int i = 0; i < len; i++) {
-      for (int j = i + 1; j < len; j++) {
-        if (arr[i] + arr[j] == value) {
-          pairCount++;
-        }
+  int count = 0;
+  for (int i = 0; i < len; i++) {
+    for (int j = i + 1; j < len; j++) {
+      if (arr[i] + arr[j] == value) {
+        count++;
       }
     }
-    return pairCount;;
+  }
+  return count;
 }
 
 int countPairs2(int *arr, int len, int value) {
-  int pairCount = 0;
+  int count = 0;
   int left = 0;
   int right = len - 1;
 
@@ -26,19 +26,21 @@ int countPairs2(int *arr, int len, int value) {
       int leftCount = 1;
       int rightCount = 1;
 
-      while (left + leftCount < right && arr[left] == arr[left + leftCount]) {
+      while (left + leftCount < right &&
+             arr[left] == arr[left + leftCount]) {
         leftCount++;
       }
 
-      while (right - rightCount > left && arr[right] == arr[right - rightCount]) {
+      while (right - rightCount > left &&
+             arr[right] == arr[right - rightCount]) {
         rightCount++;
       }
 
       if (arr[left] == arr[right]) {
         int total = leftCount + rightCount;
-        pairCount += total * (total - 1) / 2;
+        count += total * (total - 1) / 2;
       } else {
-        pairCount += leftCount * rightCount;
+        count += leftCount * rightCount;
       }
 
       left += leftCount;
@@ -50,7 +52,7 @@ int countPairs2(int *arr, int len, int value) {
     }
   }
 
-  return pairCount;
+  return count;
 }
 
 int lowerBound(int *arr, int left, int right, int target) {
