@@ -98,7 +98,7 @@ int countPairs3(int *arr, int len, int value) {
 
     int target = value - arr[i];
 
-    if (target < 0) {
+    if (target < arr[i]) {
       break;
     }
 
@@ -116,7 +116,7 @@ int countPairs3(int *arr, int len, int value) {
       int iLast = upperBound(arr, i, len - 1, arr[i]);
       int iCnt = iLast - i + 1;
 
-      count += (last - first + 1)
+      count += iCnt * (last - first + 1);
     }
   }
 
